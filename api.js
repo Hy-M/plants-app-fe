@@ -47,11 +47,11 @@ exports.postPlant = (plantDetails) => {
     .catch((err) => console.log(err, "< err in postPlant"));
 };
 
-exports.updatePlantDetails = (updatedDetails) => {
+exports.patchPlantDetails = (updatedDetails, plant_id) => {
   return axios
-    .patch("https://plants-tracker.herokuapp.com/api/garden/:plant_id", updatedDetails)
+    .patch(`https://plants-tracker.herokuapp.com/api/garden/${plant_id}`, updatedDetails)
     .then(({ data }) => {
       return data;
     })
-    .catch((err) => console.log(err, "< err in updatePlantDetails"));
+    .catch((err) => console.log(err, "< err in patchPlantDetails"));
 };

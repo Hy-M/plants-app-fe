@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity, Modal, Button } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Button,
+  TextInput,
+} from "react-native";
 import { globalStyles } from "../styles/global";
 import * as api from "../api";
 
@@ -9,6 +18,8 @@ class Garden extends Component {
     plantIsDeleting: false,
     modalIsVisible: false,
     modalSinglePlantId: null,
+    notesText: null,
+    editsMade: null,
   };
 
   componentDidMount() {
@@ -17,6 +28,8 @@ class Garden extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.garden.length !== this.state.garden.length) {
+      this.fetchGarden();
+    } else if (this.state.editsMade) {
       this.fetchGarden();
     }
   }
@@ -49,8 +62,38 @@ class Garden extends Component {
     });
   };
 
+  handleModalClose = () => {
+    this.setState(
+      (currentState) => {
+        return { modalIsVisible: !currentState.modalIsVisible };
+      },
+      () => {
+        if (this.state.editsMade) {
+          this.updatePlantDetails();
+        }
+      }
+    );
+  };
+
+  updatePlantDetails = () => {
+    let updatedPlantDetails = {
+      notes: this.state.notesText,
+    };
+    api
+      .patchPlantDetails(updatedPlantDetails, this.state.modalSinglePlantId)
+      .then((updatedPlant) => {
+        console.log(updatedPlant, "< updated platn");
+        this.setState({ editsMade: false });
+      })
+      .catch((err) => console.log(err, "< err in updatePlant"));
+  };
+
+  handleInputChange = (text) => {
+    this.setState({ editsMade: true, notesText: text });
+  };
+
   render() {
-    const { garden, plantIsDeleting, modalIsVisible } = this.state;
+    const { garden, plantIsDeleting, modalIsVisible, notesText } = this.state;
     return (
       <ScrollView>
         <View style={globalStyles.container}>
@@ -66,28 +109,29 @@ class Garden extends Component {
                 <Text>{plant.name}</Text>
                 <TouchableOpacity
                   onLongPress={() => this.removePlant(plant.plant_id)}
-                  onPress={() => this.handleImagePress(plant.plant_id)}
+                  onPress={() => {
+                    this.handleImagePress(plant.plant_id);
+                    this.setState({ notesText: plant.notes });
+                  }}
                 >
                   <Image source={{ url: plant.image_first }} style={globalStyles.imgPreview} />
                 </TouchableOpacity>
-                <Modal
-                  animationType={"slide"}
-                  transparent={false}
-                  visible={modalIsVisible}
-                  onRequestClose={() => {
-                    console.log("Modal has been closed.");
-                  }}
-                >
+                <Modal animationType={"slide"} transparent={false} visible={modalIsVisible}>
                   <View style={globalStyles.modal}>
                     <Text>{plant.name}</Text>
-                    <Text>Notes: {plant.notes}</Text>
+                    <Text>Notes:</Text>
+                    <TextInput
+                      style={{ height: 40, borderColor: "pink", borderWidth: 1 }}
+                      onChangeText={(text) => this.handleInputChange(text)}
+                      value={notesText}
+                    />
                     <Text>Planted out on: {plant.date_planted}</Text>
                     <Text>Seeds sown on: {plant.date_sown}</Text>
                     <TouchableOpacity>
                       <Button
-                        title="DONE"
+                        title="Close"
                         onPress={() => {
-                          this.handleImagePress();
+                          this.handleModalClose();
                         }}
                       />
                     </TouchableOpacity>
