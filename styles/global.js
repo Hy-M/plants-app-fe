@@ -19,6 +19,11 @@ export const globalStyles = StyleSheet.create({
     height: 200,
     borderRadius: 5,
   },
+  modal: {
+    flex: 1,
+    backgroundColor: "turquoise",
+    padding: 100,
+  },
   btn: {
     borderRadius: 5,
     backgroundColor: "pink",
