@@ -30,9 +30,9 @@ exports.getGarden = () => {
     .catch((err) => console.log(err, "< err in getGarden"));
 };
 
-exports.deletePlant = (plant_id) => {
+exports.deletePlant = (plant_id, location) => {
   return axios
-    .delete("https://plants-tracker.herokuapp.com/api/garden", {
+    .delete(`https://plants-tracker.herokuapp.com/api/${location}`, {
       data: { plant_id },
     })
     .catch((err) => console.log(err, "< err in deletePlant"));
@@ -54,4 +54,13 @@ exports.patchPlantDetails = (updatedDetails, plant_id) => {
       return data;
     })
     .catch((err) => console.log(err, "< err in patchPlantDetails"));
+};
+
+exports.getWishlist = () => {
+  return axios
+    .get("https://plants-tracker.herokuapp.com/api/wishlist")
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => console.log(err, "< err in getWishlist"));
 };

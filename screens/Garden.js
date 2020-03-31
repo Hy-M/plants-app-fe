@@ -54,7 +54,7 @@ class Garden extends Component {
   removePlant = (plant_id) => {
     this.setState({ plantIsDeleting: true }, () => {
       api
-        .deletePlant(plant_id)
+        .deletePlant(plant_id, "garden")
         .then(() => {
           this.setState({ plantIsDeleting: false }, () => {
             this.fetchGarden();
@@ -138,7 +138,7 @@ class Garden extends Component {
           )}
           {garden.map((plant) => {
             return (
-              <View key={plant.plant_id} style={globalStyles.smallImagesContainer}>
+              <View key={plant.plant_id} style={globalStyles.container}>
                 {/* <Text style={globalStyles.smallImagesTitle}>{plant.name}</Text> */}
                 <TouchableOpacity
                   onLongPress={() => this.removePlant(plant.plant_id)}
@@ -185,7 +185,7 @@ class Garden extends Component {
                     />
                     <TouchableOpacity>
                       <Button
-                        title="Save"
+                        title="Done"
                         onPress={() => {
                           this.handleModalClose();
                         }}

@@ -28,4 +28,12 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "pink",
   },
+  smallImages: {
+    width: 200,
+    height: 200,
+    borderRadius: 5,
+  },
+  smallImagesTitle: {
+    display: "flex",
+  },
 });

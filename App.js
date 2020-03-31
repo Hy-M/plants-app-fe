@@ -1,9 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import Browse from "./components/Browse";
-import Garden from "./components/Garden";
-import Wishlist from "./components/Wishlist";
+import Browse from "./screens/Browse";
+import Garden from "./screens/Garden";
+import Wishlist from "./screens/Wishlist";
 import { decode, encode } from "base-64";
 
 if (!global.btoa) {
