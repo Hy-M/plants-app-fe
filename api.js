@@ -38,9 +38,9 @@ exports.deletePlant = (plant_id, location) => {
     .catch((err) => console.log(err, "< err in deletePlant"));
 };
 
-exports.postPlant = (plantDetails) => {
+exports.postPlant = (plantDetails, location) => {
   return axios
-    .post("https://plants-tracker.herokuapp.com/api/garden", plantDetails)
+    .post(`https://plants-tracker.herokuapp.com/api/${location}`, plantDetails)
     .then(({ data }) => {
       return data;
     })

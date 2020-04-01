@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import { PLANT_ID_API_KEY } from "react-native-dotenv";
 import * as api from "../api";
 import * as utils from "../utils/utils";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 class Browse extends Component {
   state = {
@@ -60,7 +61,11 @@ class Browse extends Component {
       .getPlantIdentification(imageBase64, PLANT_ID_API_KEY)
       .then((plantIdResponse) => {
         if (plantIdResponse.suggestions[0].probability < 0.5) {
-          this.setState({ plantIdRequested: true, successfulResponse: false });
+          this.setState({
+            plantIdRequested: true,
+            successfulResponse: false,
+            identifyHasBeenClicked: false,
+          });
         } else {
           this.setState({
             plantIdRequested: true,
@@ -80,7 +85,7 @@ class Browse extends Component {
       image_first: this.state.identifiedImageUrl,
     };
     api
-      .postPlant(plantDetails)
+      .postPlant(plantDetails, "garden")
       .then((newPlant) => {
         if (newPlant.plant[0].image_first === this.state.identifiedImageUrl) {
           this.setState({ plantAddedToGarden: true }, () => {
@@ -106,16 +111,31 @@ class Browse extends Component {
     return (
       <ScrollView>
         <View style={globalStyles.container}>
-          <Text>Choose a picture to find out about a plant here :O</Text>
-          <Button title="Camera" onPress={this.launchCamera} />
-          <Button title="Camera roll" onPress={this.launchLibary} />
+          <View style={globalStyles.textContainer}>
+            <Text style={globalStyles.mainText}>Choose a picture of a plant to identify it</Text>
+          </View>
+          <View style={globalStyles.btnContainerDuo}>
+            <TouchableOpacity style={globalStyles.btnDuo} onPress={this.launchCamera}>
+              <Text style={globalStyles.btnText}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={globalStyles.btnDuo} onPress={this.launchLibary}>
+              <Text style={globalStyles.btnText}>Gallery</Text>
+            </TouchableOpacity>
+          </View>
+
           {imageUri && imageBase64 && (
             <View>
               <Image source={{ uri: imageUri }} style={globalStyles.imgPreview} />
-              <Button
-                title={!identifyHasBeenClicked ? "Identify!" : "Loading..."}
-                onPress={this.requestPlantIdentification}
-              />
+              <View style={globalStyles.btnContainerSingle}>
+                <TouchableOpacity
+                  onPress={this.requestPlantIdentification}
+                  style={globalStyles.btnSingle}
+                >
+                  <Text style={globalStyles.btnText}>
+                    {!identifyHasBeenClicked ? "Identify!" : "Loading..."}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
           {plantIdRequested &&
@@ -124,21 +144,30 @@ class Browse extends Component {
               if (suggestion.probability >= 0.5) {
                 return (
                   <View key={suggestion.plant_name} style={globalStyles.listContainer}>
-                    <Text>Suggestion: {suggestion.plant_name}</Text>
-                    <Text>Probability: {utils.formatProbability(suggestion.probability)}</Text>
-                    <Button
-                      style={globalStyles.btn}
-                      title="This is in my garden"
-                      onPress={() => this.addPlantToGarden(suggestion.plant_name)}
-                    />
-                    <Button title="I want to grow this later!" />
+                    <View style={globalStyles.textContainer}>
+                      <Text style={globalStyles.mainText}>{suggestion.plant_name}</Text>
+                      <Text style={globalStyles.secondaryText}>
+                        Probability: {utils.formatProbability(suggestion.probability)}
+                      </Text>
+                    </View>
+                    <View style={globalStyles.btnContainerDuo}>
+                      <TouchableOpacity
+                        style={globalStyles.btnDuo}
+                        onPress={() => this.addPlantToGarden(suggestion.plant_name)}
+                      >
+                        <Text style={globalStyles.btnText}>Add to my garden!</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={globalStyles.btnDuo}>
+                        <Text style={globalStyles.btnText}>I'll grow this later!</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 );
               }
             })}
           {plantIdRequested && !successfulResponse && (
-            <View style={globalStyles.listContainer}>
-              <Text>Sorry, this plant is not recognised :/</Text>
+            <View style={globalStyles.textContainer}>
+              <Text style={globalStyles.secondaryText}>Sorry, I don't recognise this plant.</Text>
             </View>
           )}
         </View>

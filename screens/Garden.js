@@ -26,7 +26,10 @@ class Garden extends Component {
     datePlanted: null,
     dateSown: null,
     modalClosing: false,
+    plantAddedToWishlist: null,
+    plantToMoveToWishlist: null,
     loading: true,
+    tappedToRefresh: false,
   };
 
   componentDidMount() {
@@ -39,6 +42,8 @@ class Garden extends Component {
       this.fetchGarden();
     } else if (this.state.editsMade) {
       this.fetchGarden();
+    } else if (this.state.tappedToRefresh) {
+      this.fetchGarden();
     }
   }
 
@@ -46,7 +51,7 @@ class Garden extends Component {
     api
       .getGarden()
       .then(({ garden }) => {
-        this.setState({ garden, loading: false });
+        this.setState({ garden, loading: false, tappedToRefresh: false });
       })
       .catch((err) => console.log(err, "< err in fetchGarden"));
   };
@@ -110,6 +115,30 @@ class Garden extends Component {
     }
   };
 
+  handleMoveToWishlistBtn = (plantName, plantImageUrl) => {
+    this.addPlantToWishlist(plantName, plantImageUrl);
+  };
+
+  addPlantToWishlist = (plantName, plantImageUrl) => {
+    let plantDetails = {
+      name: plantName,
+      image_first: plantImageUrl,
+    };
+    api
+      .postPlant(plantDetails, "wishlist")
+      .then((newPlant) => {
+        if (newPlant.plant[0].image_first === plantImageUrl) {
+          this.setState({ plantAddedToWishlist: true }, () => {
+            Alert.alert("Success!", `${plantName} has been moved to your wishlist`, [
+              { text: "Okay!" },
+            ]);
+            this.removePlant(this.state.plantToMoveToWishlist);
+          });
+        }
+      })
+      .catch((err) => console.log(err, "< err in addPlant"));
+  };
+
   render() {
     const {
       garden,
@@ -119,13 +148,22 @@ class Garden extends Component {
       defaultImgUrl,
       datePlanted,
       dateSown,
+      tappedToRefresh,
       loading,
     } = this.state;
 
     return (
       <ScrollView>
         <View style={globalStyles.container}>
-          <Text>This is your garden :O Long press image to delete, or tap to see more details</Text>
+          <TouchableOpacity onPress={() => this.setState({ tappedToRefresh: true })}>
+            {tappedToRefresh ? <Text>Refreshing</Text> : <Text>Tap to refresh</Text>}
+          </TouchableOpacity>
+          <View style={globalStyles.mainTextContainer}>
+            <Text style={globalStyles.mainText}>
+              This is your garden :O Long press image to delete, or tap to see more details
+            </Text>
+          </View>
+
           {plantIsDeleting && (
             <View>
               <Text>Deleting...</Text>
@@ -138,8 +176,8 @@ class Garden extends Component {
           )}
           {garden.map((plant) => {
             return (
-              <View key={plant.plant_id} style={globalStyles.container}>
-                {/* <Text style={globalStyles.smallImagesTitle}>{plant.name}</Text> */}
+              <View key={plant.plant_id}>
+                <Text>{plant.name}</Text>
                 <TouchableOpacity
                   onLongPress={() => this.removePlant(plant.plant_id)}
                   onPress={() => {
@@ -156,9 +194,15 @@ class Garden extends Component {
                     style={globalStyles.smallImages}
                   />
                 </TouchableOpacity>
+                <Button
+                  title="Move to wishlist"
+                  onPress={() => {
+                    this.handleMoveToWishlistBtn(plant.name, plant.image_first || defaultImgUrl);
+                    this.setState({ plantToMoveToWishlist: plant.plant_id });
+                  }}
+                />
                 <Modal animationType={"slide"} transparent={false} visible={modalIsVisible}>
                   <View style={globalStyles.modal}>
-                    <Text>{plant.name}</Text>
                     <Text>Notes:</Text>
                     <TextInput
                       style={{ height: 40, borderColor: "pink", borderWidth: 1 }}

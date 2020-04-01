@@ -1,22 +1,11 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Modal,
-  Button,
-  Alert,
-} from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity, Button, Alert } from "react-native";
 import { globalStyles } from "../styles/global";
 import * as api from "../api";
 
 class Wishlist extends Component {
   state = {
     wishlist: [],
-    modalIsVisible: false,
-    modalSinglePlantId: null,
     plantIsDeleting: null,
     defaultImgUrl:
       "https://images.pexels.com/photos/1072824/pexels-photo-1072824.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
@@ -58,18 +47,6 @@ class Wishlist extends Component {
     });
   };
 
-  handleImagePress = (plant_id = null) => {
-    this.setState((currentState) => {
-      return { modalIsVisible: !currentState.modalIsVisible, modalSinglePlantId: plant_id };
-    });
-  };
-
-  handleModalClose = () => {
-    this.setState((currentState) => {
-      return { modalIsVisible: !currentState.modalIsVisible, modalClosing: true };
-    });
-  };
-
   handleMoveToGardenBtn = (plantName, plantImageUrl) => {
     this.addPlantToGarden(plantName, plantImageUrl);
   };
@@ -80,7 +57,7 @@ class Wishlist extends Component {
       image_first: plantImageUrl,
     };
     api
-      .postPlant(plantDetails)
+      .postPlant(plantDetails, "garden")
       .then((newPlant) => {
         if (newPlant.plant[0].image_first === plantImageUrl) {
           this.setState({ plantAddedToGarden: true }, () => {
@@ -95,7 +72,7 @@ class Wishlist extends Component {
   };
 
   render() {
-    const { wishlist, plantIsDeleting, defaultImgUrl, modalIsVisible, loading } = this.state;
+    const { wishlist, plantIsDeleting, defaultImgUrl, loading } = this.state;
     return (
       <ScrollView>
         <View style={globalStyles.container}>
@@ -113,43 +90,20 @@ class Wishlist extends Component {
           {wishlist.map((plant) => {
             return (
               <View key={plant.plant_id} style={globalStyles.container}>
-                <TouchableOpacity
-                  onLongPress={() => this.removePlant(plant.plant_id)}
-                  onPress={() => {
-                    this.handleImagePress(plant.plant_id);
-                  }}
-                >
+                <Text>{plant.name}</Text>
+                <TouchableOpacity onLongPress={() => this.removePlant(plant.plant_id)}>
                   <Image
                     source={{ url: plant.image_first || defaultImgUrl }}
                     style={globalStyles.smallImages}
                   />
                 </TouchableOpacity>
-                <Modal animationType={"slide"} transparent={false} visible={modalIsVisible}>
-                  <View style={globalStyles.modal}>
-                    <Text>{plant.name}</Text>
-                    <Text>Date added: </Text>
-                    <TouchableOpacity>
-                      <Button
-                        title="Move to garden"
-                        onPress={() => {
-                          this.handleMoveToGardenBtn(
-                            plant.name,
-                            plant.image_first || defaultImgUrl
-                          );
-                          this.setState({ plantToMoveToGarden: plant.plant_id });
-                        }}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      <Button
-                        title="Close"
-                        onPress={() => {
-                          this.handleModalClose();
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </Modal>
+                <Button
+                  title="Move to garden"
+                  onPress={() => {
+                    this.handleMoveToGardenBtn(plant.name, plant.image_first || defaultImgUrl);
+                    this.setState({ plantToMoveToGarden: plant.plant_id });
+                  }}
+                />
               </View>
             );
           })}
