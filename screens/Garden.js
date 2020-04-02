@@ -131,6 +131,8 @@ class Garden extends Component {
     api
       .postPlant(plantDetails, "wishlist")
       .then((newPlant) => {
+        console.log(newPlant, "< new plant in addPlantToWishlist");
+
         if (newPlant.plant[0].image_first === plantImageUrl) {
           this.setState({ plantAddedToWishlist: true }, () => {
             Alert.alert("Success!", `${plantName} has been moved to your wishlist`, [
@@ -138,6 +140,8 @@ class Garden extends Component {
             ]);
             this.removePlant(this.state.plantToMoveToWishlist);
           });
+        } else {
+          console.log("lalala in the else");
         }
       })
       .catch((err) => console.log(err, "< err in addPlant"));
@@ -159,7 +163,7 @@ class Garden extends Component {
     return (
       <ScrollView>
         <View style={globalStyles.gardenScreenContainer}>
-          <View style={styles.textContainer}>
+          <View style={globalStyles.textContainer}>
             <Text style={globalStyles.secondaryText}>
               Tap on a plant to see more details, or long press to delete it
             </Text>
@@ -178,15 +182,12 @@ class Garden extends Component {
               <Text style={styles.refreshText}>Deleting...</Text>
             </View>
           )}
-          {/* {loading && (
-            <View>
-              <Text style={styles.refreshText}>Loading...</Text>
-            </View>
-          )} */}
+
           <View style={globalStyles.imgListContainer}>
             {garden.map((plant) => {
               return (
                 <View key={plant.plant_id} style={globalStyles.imgCard}>
+                  <Text style={globalStyles.secondaryText}>{plant.name}</Text>
                   <TouchableOpacity
                     onLongPress={() => this.removePlant(plant.plant_id)}
                     onPress={() => {
@@ -280,15 +281,6 @@ class Garden extends Component {
 export default Garden;
 
 const styles = StyleSheet.create({
-  textContainer: {
-    marginTop: 80,
-    width: Dimensions.get("window").width / 1.2,
-    marginBottom: 20,
-  },
-  refreshText: {
-    marginBottom: 10,
-    letterSpacing: 0.3,
-  },
   modal: {
     minHeight: Dimensions.get("window").height,
     backgroundColor: "pink",

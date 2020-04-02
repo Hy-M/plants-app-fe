@@ -22,7 +22,12 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#cdfaee",
   },
+  browseTextContainer: {
+    width: Dimensions.get("window").width / 1.2,
+    marginBottom: 20,
+  },
   textContainer: {
+    marginTop: 80,
     width: Dimensions.get("window").width / 1.2,
     marginBottom: 20,
   },
@@ -30,13 +35,17 @@ export const globalStyles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 30,
     textAlign: "center",
-    letterSpacing: 0.7,
+    letterSpacing: 0.6,
   },
   secondaryText: {
     fontSize: 18,
     textAlign: "center",
     lineHeight: 28,
-    letterSpacing: 0.6,
+    letterSpacing: 0.5,
+  },
+  refreshText: {
+    marginBottom: 10,
+    letterSpacing: 0.3,
   },
   imgPreview: {
     marginTop: 20,

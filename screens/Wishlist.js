@@ -12,6 +12,7 @@ class Wishlist extends Component {
     plantAddedToGarden: null,
     plantToMoveToGarden: null,
     loading: true,
+    tappedToRefresh: false,
   };
 
   componentDidMount() {
@@ -22,6 +23,8 @@ class Wishlist extends Component {
     let { wishlist } = this.state;
     if (prevState.wishlist.length !== wishlist.length) {
       this.fetchWishlist();
+    } else if (this.state.tappedToRefresh) {
+      this.fetchWishlist();
     }
   }
 
@@ -29,7 +32,7 @@ class Wishlist extends Component {
     api
       .getWishlist()
       .then(({ wishlist }) => {
-        this.setState({ wishlist, loading: false });
+        this.setState({ wishlist, loading: false, tappedToRefresh: false });
       })
       .catch((err) => console.log(err, "< err in fetchWishlist"));
   };
@@ -72,41 +75,55 @@ class Wishlist extends Component {
   };
 
   render() {
-    const { wishlist, plantIsDeleting, defaultImgUrl, loading } = this.state;
+    const { wishlist, plantIsDeleting, defaultImgUrl, tappedToRefresh, loading } = this.state;
     return (
       <ScrollView>
-        <View style={globalStyles.container}>
-          <Text>This is ur wishlist :) long press to delete, tap to see more info</Text>
+        <View style={globalStyles.gardenScreenContainer}>
+          <View style={globalStyles.textContainer}>
+            <Text style={globalStyles.secondaryText}>
+              Tap on a plant to see more details, or long press to delete it
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => this.setState({ tappedToRefresh: true })}>
+            {tappedToRefresh || loading ? (
+              <Text style={globalStyles.refreshText}>Loading...</Text>
+            ) : (
+              <Text style={globalStyles.refreshText}>Tap to refresh</Text>
+            )}
+          </TouchableOpacity>
+
           {plantIsDeleting && (
-            <View>
+            <View style={globalStyles.refreshText}>
               <Text>Deleting...</Text>
             </View>
           )}
-          {loading && (
-            <View>
-              <Text>Loading...</Text>
-            </View>
-          )}
-          {wishlist.map((plant) => {
-            return (
-              <View key={plant.plant_id} style={globalStyles.container}>
-                <Text>{plant.name}</Text>
-                <TouchableOpacity onLongPress={() => this.removePlant(plant.plant_id)}>
-                  <Image
-                    source={{ url: plant.image_first || defaultImgUrl }}
-                    style={globalStyles.smallImages}
-                  />
-                </TouchableOpacity>
-                <Button
-                  title="Move to garden"
-                  onPress={() => {
-                    this.handleMoveToGardenBtn(plant.name, plant.image_first || defaultImgUrl);
-                    this.setState({ plantToMoveToGarden: plant.plant_id });
-                  }}
-                />
-              </View>
-            );
-          })}
+
+          <View style={globalStyles.imgListContainer}>
+            {wishlist.map((plant) => {
+              return (
+                <View key={plant.plant_id} style={globalStyles.imgCard}>
+                  <Text style={globalStyles.secondaryText}>{plant.name}</Text>
+                  <TouchableOpacity onLongPress={() => this.removePlant(plant.plant_id)}>
+                    <Image
+                      source={{ url: plant.image_first || defaultImgUrl }}
+                      style={globalStyles.smallImages}
+                    />
+                  </TouchableOpacity>
+                  <View style={globalStyles.btnContainerSingle}>
+                    <TouchableOpacity
+                      style={globalStyles.btnSingle}
+                      onPress={() => {
+                        this.handleMoveToGardenBtn(plant.name, plant.image_first || defaultImgUrl);
+                        this.setState({ plantToMoveToGarden: plant.plant_id });
+                      }}
+                    >
+                      <Text style={globalStyles.btnText}>Move to garden</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
         </View>
       </ScrollView>
     );

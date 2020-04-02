@@ -16,7 +16,7 @@ class Browse extends Component {
     plantIdResponse: null,
     successfulResponse: null,
     identifiedImageUrl: null,
-    plantAddedToGarden: null,
+    plantAddedToLocation: null,
   };
 
   componentDidMount() {
@@ -79,17 +79,17 @@ class Browse extends Component {
       .catch((err) => console.log(err, "error in browse.js"));
   };
 
-  addPlantToGarden = (plantName) => {
+  addPlantToLocation = (plantName, location) => {
     let plantDetails = {
       name: plantName,
       image_first: this.state.identifiedImageUrl,
     };
     api
-      .postPlant(plantDetails, "garden")
+      .postPlant(plantDetails, location)
       .then((newPlant) => {
         if (newPlant.plant[0].image_first === this.state.identifiedImageUrl) {
-          this.setState({ plantAddedToGarden: true }, () => {
-            Alert.alert("Success!", `${plantName} has been added to your garden`, [
+          this.setState({ plantAddedToLocation: true }, () => {
+            Alert.alert("Success!", `${plantName} has been added to your ${location}`, [
               { text: "Okay!" },
             ]);
           });
@@ -111,7 +111,7 @@ class Browse extends Component {
     return (
       <ScrollView>
         <View style={globalStyles.browseScreenContainer}>
-          <View style={globalStyles.textContainer}>
+          <View style={globalStyles.browseTextContainer}>
             <Text style={globalStyles.mainText}>Choose a picture of a plant to identify it</Text>
           </View>
           <View style={globalStyles.btnContainerDuo}>
@@ -144,7 +144,7 @@ class Browse extends Component {
               if (suggestion.probability >= 0.5) {
                 return (
                   <View key={suggestion.plant_name} style={globalStyles.listContainer}>
-                    <View style={globalStyles.textContainer}>
+                    <View style={globalStyles.browseTextContainer}>
                       <Text style={globalStyles.mainText}>{suggestion.plant_name}</Text>
                       <Text style={globalStyles.secondaryText}>
                         Probability: {utils.formatProbability(suggestion.probability)}
@@ -153,11 +153,14 @@ class Browse extends Component {
                     <View style={globalStyles.btnContainerDuo}>
                       <TouchableOpacity
                         style={globalStyles.btnDuo}
-                        onPress={() => this.addPlantToGarden(suggestion.plant_name)}
+                        onPress={() => this.addPlantToLocation(suggestion.plant_name, "garden")}
                       >
                         <Text style={globalStyles.btnText}>Add to my garden!</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={globalStyles.btnDuo}>
+                      <TouchableOpacity
+                        style={globalStyles.btnDuo}
+                        onPress={() => this.addPlantToLocation(suggestion.plant_name, "wishlist")}
+                      >
                         <Text style={globalStyles.btnText}>I'll grow this later!</Text>
                       </TouchableOpacity>
                     </View>
@@ -166,7 +169,7 @@ class Browse extends Component {
               }
             })}
           {plantIdRequested && !successfulResponse && (
-            <View style={globalStyles.textContainer}>
+            <View style={globalStyles.browseTextContainer}>
               <Text style={globalStyles.secondaryText}>Sorry, I don't recognise this plant.</Text>
             </View>
           )}
