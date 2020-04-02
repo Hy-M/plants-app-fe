@@ -110,7 +110,7 @@ class Browse extends Component {
 
     return (
       <ScrollView>
-        <View style={globalStyles.container}>
+        <View style={globalStyles.browseScreenContainer}>
           <View style={globalStyles.textContainer}>
             <Text style={globalStyles.mainText}>Choose a picture of a plant to identify it</Text>
           </View>

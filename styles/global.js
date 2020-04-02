@@ -1,24 +1,42 @@
 import { StyleSheet, Dimensions } from "react-native";
 
+let color =
+  "#" +
+  (function co(lor) {
+    return (lor += [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"][
+      Math.floor(Math.random() * 16)
+    ]) && lor.length == 6
+      ? lor
+      : co(lor);
+  })("");
+
 export const globalStyles = StyleSheet.create({
-  container: {
+  browseScreenContainer: {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#dcf2bd",
     height: Dimensions.get("window").height,
   },
+  gardenScreenContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#cdfaee",
+  },
   textContainer: {
-    marginTop: 10,
-    width: Dimensions.get("window").width / 1.3,
+    width: Dimensions.get("window").width / 1.2,
+    marginBottom: 20,
   },
   mainText: {
     fontSize: 20,
     lineHeight: 30,
     textAlign: "center",
+    letterSpacing: 0.7,
   },
   secondaryText: {
     fontSize: 18,
     textAlign: "center",
+    lineHeight: 28,
+    letterSpacing: 0.6,
   },
   imgPreview: {
     marginTop: 20,
@@ -31,10 +49,32 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  imgListContainer: {
+    justifyContent: "space-evenly",
+    marginTop: 20,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  imgCard: {
+    marginBottom: 30,
+    width: Dimensions.get("window").width / 2.2,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  // imgCardTextContainer: {
+  //   // height: 70,
+  //   maxWidth: "80%",
+  // },
+  smallImages: {
+    width: 160,
+    height: 160,
+    borderRadius: 8,
+  },
   btnContainerDuo: {
     flexDirection: "row",
   },
   btnContainerSingle: {
+    alignSelf: "center",
     flexDirection: "column",
   },
   btnDuo: {
@@ -58,18 +98,6 @@ export const globalStyles = StyleSheet.create({
   btnText: {
     fontSize: 16,
     textAlign: "center",
-  },
-  modal: {
-    flex: 1,
-    backgroundColor: "turquoise",
-    padding: 100,
-  },
-  smallImages: {
-    width: 200,
-    height: 200,
-    borderRadius: 5,
-  },
-  smallImagesTitle: {
-    display: "flex",
+    letterSpacing: 0.5,
   },
 });

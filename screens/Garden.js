@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   Modal,
   Button,
+  StyleSheet,
   TextInput,
+  Dimensions,
+  Alert,
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import * as api from "../api";
@@ -62,6 +65,7 @@ class Garden extends Component {
         .deletePlant(plant_id, "garden")
         .then(() => {
           this.setState({ plantIsDeleting: false }, () => {
+            Alert.alert("Deleted!", "", [{ text: "Okay" }]);
             this.fetchGarden();
           });
         })
@@ -154,92 +158,119 @@ class Garden extends Component {
 
     return (
       <ScrollView>
-        <View style={globalStyles.container}>
-          <TouchableOpacity onPress={() => this.setState({ tappedToRefresh: true })}>
-            {tappedToRefresh ? <Text>Refreshing</Text> : <Text>Tap to refresh</Text>}
-          </TouchableOpacity>
-          <View style={globalStyles.mainTextContainer}>
-            <Text style={globalStyles.mainText}>
-              This is your garden :O Long press image to delete, or tap to see more details
+        <View style={globalStyles.gardenScreenContainer}>
+          <View style={styles.textContainer}>
+            <Text style={globalStyles.secondaryText}>
+              Tap on a plant to see more details, or long press to delete it
             </Text>
           </View>
 
+          <TouchableOpacity onPress={() => this.setState({ tappedToRefresh: true })}>
+            {tappedToRefresh || loading ? (
+              <Text style={styles.refreshText}>Loading...</Text>
+            ) : (
+              <Text style={styles.refreshText}>Tap to refresh</Text>
+            )}
+          </TouchableOpacity>
+
           {plantIsDeleting && (
             <View>
-              <Text>Deleting...</Text>
+              <Text style={styles.refreshText}>Deleting...</Text>
             </View>
           )}
-          {loading && (
+          {/* {loading && (
             <View>
-              <Text>Loading...</Text>
+              <Text style={styles.refreshText}>Loading...</Text>
             </View>
-          )}
-          {garden.map((plant) => {
-            return (
-              <View key={plant.plant_id}>
-                <Text>{plant.name}</Text>
-                <TouchableOpacity
-                  onLongPress={() => this.removePlant(plant.plant_id)}
-                  onPress={() => {
-                    this.handleImagePress(plant.plant_id);
-                    this.setState({
-                      notesText: plant.notes,
-                      datePlanted: plant.date_planted,
-                      dateSown: plant.date_sown,
-                    });
-                  }}
-                >
-                  <Image
-                    source={{ url: plant.image_first || defaultImgUrl }}
-                    style={globalStyles.smallImages}
-                  />
-                </TouchableOpacity>
-                <Button
-                  title="Move to wishlist"
-                  onPress={() => {
-                    this.handleMoveToWishlistBtn(plant.name, plant.image_first || defaultImgUrl);
-                    this.setState({ plantToMoveToWishlist: plant.plant_id });
-                  }}
-                />
-                <Modal animationType={"slide"} transparent={false} visible={modalIsVisible}>
-                  <View style={globalStyles.modal}>
-                    <Text>Notes:</Text>
-                    <TextInput
-                      style={{ height: 40, borderColor: "pink", borderWidth: 1 }}
-                      onChangeText={(text) => this.handleInputChange(text)}
-                      value={notesText}
+          )} */}
+          <View style={globalStyles.imgListContainer}>
+            {garden.map((plant) => {
+              return (
+                <View key={plant.plant_id} style={globalStyles.imgCard}>
+                  <TouchableOpacity
+                    onLongPress={() => this.removePlant(plant.plant_id)}
+                    onPress={() => {
+                      this.handleImagePress(plant.plant_id);
+                      this.setState({
+                        notesText: plant.notes,
+                        datePlanted: plant.date_planted,
+                        dateSown: plant.date_sown,
+                      });
+                    }}
+                  >
+                    <Image
+                      source={{ url: plant.image_first || defaultImgUrl }}
+                      style={globalStyles.smallImages}
                     />
-                    <Text>Planted out on:</Text>
-                    <DatePicker
-                      date={datePlanted}
-                      mode="date"
-                      format="YYYY-MM-DD"
-                      confirmBtnText="Done"
-                      cancelBtnText="Cancel"
-                      onDateChange={(date) => this.handleDateChange(date, "planted")}
-                    />
-                    <Text>Seeds sown on:</Text>
-                    <DatePicker
-                      date={dateSown}
-                      mode="date"
-                      format="YYYY-MM-DD"
-                      confirmBtnText="Done"
-                      cancelBtnText="Cancel"
-                      onDateChange={(date) => this.handleDateChange(date, "sown")}
-                    />
-                    <TouchableOpacity>
-                      <Button
-                        title="Done"
-                        onPress={() => {
-                          this.handleModalClose();
-                        }}
-                      />
+                  </TouchableOpacity>
+                  <View style={globalStyles.btnContainerSingle}>
+                    <TouchableOpacity
+                      style={globalStyles.btnSingle}
+                      onPress={() => {
+                        this.handleMoveToWishlistBtn(
+                          plant.name,
+                          plant.image_first || defaultImgUrl
+                        );
+                        this.setState({ plantToMoveToWishlist: plant.plant_id });
+                      }}
+                    >
+                      <Text style={globalStyles.btnText}>Move to wishlist</Text>
                     </TouchableOpacity>
                   </View>
-                </Modal>
-              </View>
-            );
-          })}
+                  <Modal animationType={"slide"} transparent={false} visible={modalIsVisible}>
+                    <ScrollView>
+                      <View style={styles.modal}>
+                        <View style={styles.modalContent}>
+                          <View style={styles.modalTitleContainer}>
+                            <Text style={styles.modalTitle}>{plant.name}</Text>
+                          </View>
+
+                          <Text style={styles.modalSubText}>Notes:</Text>
+                          <TextInput
+                            style={styles.modalInput}
+                            onChangeText={(text) => this.handleInputChange(text)}
+                            value={notesText}
+                            multiline={true}
+                          />
+
+                          <Text style={styles.modalSubText}>Planted out on:</Text>
+                          <DatePicker
+                            style={styles.modalDateInput}
+                            date={datePlanted}
+                            mode="date"
+                            format="YYYY-MM-DD"
+                            confirmBtnText="Done"
+                            cancelBtnText="Cancel"
+                            onDateChange={(date) => this.handleDateChange(date, "planted")}
+                          />
+                          <Text style={styles.modalSubText}>Seeds sown on:</Text>
+                          <DatePicker
+                            style={styles.modalDateInput}
+                            date={dateSown}
+                            mode="date"
+                            format="YYYY-MM-DD"
+                            confirmBtnText="Done"
+                            cancelBtnText="Cancel"
+                            onDateChange={(date) => this.handleDateChange(date, "sown")}
+                          />
+                          <View style={globalStyles.btnContainerSingle}>
+                            <TouchableOpacity
+                              style={globalStyles.btnSingle}
+                              onPress={() => {
+                                this.handleModalClose();
+                              }}
+                            >
+                              <Text style={globalStyles.btnText}>Done</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+                    </ScrollView>
+                  </Modal>
+                </View>
+              );
+            })}
+          </View>
         </View>
       </ScrollView>
     );
@@ -247,3 +278,52 @@ class Garden extends Component {
 }
 
 export default Garden;
+
+const styles = StyleSheet.create({
+  textContainer: {
+    marginTop: 80,
+    width: Dimensions.get("window").width / 1.2,
+    marginBottom: 20,
+  },
+  refreshText: {
+    marginBottom: 10,
+    letterSpacing: 0.3,
+  },
+  modal: {
+    minHeight: Dimensions.get("window").height,
+    backgroundColor: "pink",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 80,
+  },
+  modalContent: {
+    width: Dimensions.get("window").width / 1.2,
+  },
+  modalTitleContainer: {
+    marginBottom: 30,
+  },
+  modalTitle: {
+    textTransform: "capitalize",
+    fontSize: 30,
+    textAlign: "center",
+    letterSpacing: 1.1,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    minHeight: 100,
+    marginBottom: 30,
+  },
+  modalDateInput: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginBottom: 30,
+  },
+  modalSubText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+});
