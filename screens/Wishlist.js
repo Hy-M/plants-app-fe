@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity, Button, Alert } from "react-native";
 import { globalStyles } from "../styles/global";
 import * as api from "../api";
-
+import Emoji from "react-native-emoji";
 class Wishlist extends Component {
   state = {
     wishlist: [],
@@ -91,6 +91,9 @@ class Wishlist extends Component {
       <ScrollView>
         <View style={globalStyles.wishlistScreenContainer}>
           <View style={globalStyles.textContainer}>
+            <Text style={globalStyles.titleText}>
+              My wishlist <Emoji name="star2" style={{ fontSize: 20 }} />
+            </Text>
             <Text style={globalStyles.secondaryText}>Long press a plant to delete it</Text>
           </View>
 

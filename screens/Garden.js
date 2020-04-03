@@ -178,6 +178,9 @@ class Garden extends Component {
       <ScrollView>
         <View style={globalStyles.gardenScreenContainer}>
           <View style={globalStyles.textContainer}>
+            <Text style={globalStyles.titleText}>
+              My garden <Emoji name="deciduous_tree" style={{ fontSize: 20 }} />
+            </Text>
             <Text style={globalStyles.secondaryText}>
               Tap on a plant to see more details, or long press to delete it
             </Text>

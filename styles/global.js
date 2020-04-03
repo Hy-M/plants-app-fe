@@ -40,6 +40,13 @@ export const globalStyles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.6,
   },
+  titleText: {
+    fontSize: 22,
+    lineHeight: 35,
+    textAlign: "center",
+    letterSpacing: 0.6,
+    marginBottom: 20,
+  },
   secondaryText: {
     fontSize: 18,
     textAlign: "center",

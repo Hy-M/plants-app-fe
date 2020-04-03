@@ -68,6 +68,7 @@ class Browse extends Component {
             identifyHasBeenClicked: false,
           });
         } else {
+          console.log(plantIdResponse.suggestions[0].common_names, ",comon nam");
           this.setState({
             plantIdRequested: true,
             plantIdResponse,

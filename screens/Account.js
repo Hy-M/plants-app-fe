@@ -6,11 +6,16 @@ import Emoji from "react-native-emoji";
 
 class Account extends Component {
   state = {
-    user: Auth.user.username || null,
+    user: Auth.user.username,
+    loggedIn: true,
   };
 
-  handleSignOutPress = () => {
-    Auth.signOut();
+  handleSignOut = () => {
+    Auth.signOut()
+      .then(() => {
+        this.setState({ loggedIn: false, user: "" });
+      })
+      .catch((err) => console.log(err, "< err in handleSignOut"));
   };
 
   render() {
@@ -38,7 +43,7 @@ class Account extends Component {
         )}
 
         <View style={globalStyles.btnContainerSingle}>
-          <TouchableOpacity style={globalStyles.btnSingle} onPress={this.handleSignOutPress}>
+          <TouchableOpacity style={globalStyles.btnSingle} onPress={this.handleSignOut}>
             <Text style={globalStyles.btnText}>Sign out</Text>
           </TouchableOpacity>
         </View>

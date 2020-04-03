@@ -12,7 +12,7 @@ import awsConfig from "./src/aws-exports";
 Amplify.configure(awsConfig);
 
 import { withAuthenticator } from "aws-amplify-react-native";
-
+console.disableYellowBox = true;
 if (!global.btoa) {
   global.btoa = encode;
 }
