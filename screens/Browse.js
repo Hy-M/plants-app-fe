@@ -6,7 +6,7 @@ import { PLANT_ID_API_KEY } from "react-native-dotenv";
 import * as api from "../api";
 import * as utils from "../utils/utils";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Account from "./Account";
+import Emoji from "react-native-emoji";
 
 class Browse extends Component {
   state = {
@@ -132,7 +132,10 @@ class Browse extends Component {
       <ScrollView>
         <View style={globalStyles.browseScreenContainer}>
           <View style={globalStyles.browseTextContainer}>
-            <Text style={globalStyles.mainText}>Choose a picture of a plant to identify it</Text>
+            <Text style={globalStyles.mainText}>
+              Choose a picture of a plant to identify it{" "}
+              <Emoji name="four_leaf_clover" style={{ fontSize: 25 }} />
+            </Text>
           </View>
           <View style={globalStyles.btnContainerDuo}>
             <TouchableOpacity style={globalStyles.btnDuo} onPress={this.launchCamera}>

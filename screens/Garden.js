@@ -17,6 +17,7 @@ import { globalStyles } from "../styles/global";
 import * as api from "../api";
 import DatePicker from "react-native-datepicker";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import Emoji from "react-native-emoji";
 
 class Garden extends Component {
   state = {
@@ -200,13 +201,6 @@ class Garden extends Component {
             </View>
           )}
 
-          {/* 
-          <View style={globalStyles.btnContainerSingle}>
-            <TouchableOpacity style={globalStyles.btnSingle} onPress={this.handleAddPlantPress()}>
-              <Text style={globalStyles.btnText}>Add a plant</Text>
-            </TouchableOpacity>
-          </View> */}
-
           <View style={globalStyles.imgListContainer}>
             {garden.map((plant) => {
               return (
@@ -256,7 +250,10 @@ class Garden extends Component {
                             <Text style={styles.modalTitle}>{modalPlantName}</Text>
                           </View>
 
-                          <Text style={styles.modalSubText}>Notes:</Text>
+                          <Text style={styles.modalSubText}>
+                            <Emoji name="memo" style={{ fontSize: 20 }} />
+                            Notes:
+                          </Text>
                           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <TextInput
                               style={styles.modalInput}
@@ -265,7 +262,10 @@ class Garden extends Component {
                               multiline={true}
                             />
                           </TouchableWithoutFeedback>
-                          <Text style={styles.modalSubText}>Seeds sown on:</Text>
+                          <Text style={styles.modalSubText}>
+                            <Emoji name="seedling" style={{ fontSize: 20 }} />
+                            Seeds sown on:
+                          </Text>
                           <DatePicker
                             style={styles.modalDateInput}
                             date={dateSown}
@@ -275,7 +275,10 @@ class Garden extends Component {
                             cancelBtnText="Cancel"
                             onDateChange={(date) => this.handleDateChange(date, "sown")}
                           />
-                          <Text style={styles.modalSubText}>Planted out on:</Text>
+                          <Text style={styles.modalSubText}>
+                            <Emoji name="sunflower" style={{ fontSize: 20 }} />
+                            Planted out on:
+                          </Text>
                           <DatePicker
                             style={styles.modalDateInput}
                             date={datePlanted}

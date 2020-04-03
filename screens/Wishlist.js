@@ -91,9 +91,7 @@ class Wishlist extends Component {
       <ScrollView>
         <View style={globalStyles.wishlistScreenContainer}>
           <View style={globalStyles.textContainer}>
-            <Text style={globalStyles.secondaryText}>
-              Tap on a plant to see more details, or long press to delete it
-            </Text>
+            <Text style={globalStyles.secondaryText}>Long press a plant to delete it</Text>
           </View>
 
           <TouchableOpacity onPress={() => this.setState({ tappedToRefresh: true })}>

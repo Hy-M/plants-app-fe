@@ -32,22 +32,22 @@ export const globalStyles = StyleSheet.create({
   textContainer: {
     marginTop: 80,
     width: Dimensions.get("window").width / 1.2,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   mainText: {
     fontSize: 20,
-    lineHeight: 30,
+    lineHeight: 35,
     textAlign: "center",
     letterSpacing: 0.6,
   },
   secondaryText: {
     fontSize: 18,
     textAlign: "center",
-    lineHeight: 28,
+    lineHeight: 30,
     letterSpacing: 0.5,
   },
   refreshText: {
-    marginBottom: 10,
+    marginBottom: 20,
     letterSpacing: 0.3,
   },
   imgPreview: {
@@ -78,6 +78,7 @@ export const globalStyles = StyleSheet.create({
   //   maxWidth: "80%",
   // },
   smallImages: {
+    marginTop: 10,
     width: 160,
     height: 160,
     borderRadius: 8,
