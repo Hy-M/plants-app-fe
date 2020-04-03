@@ -6,6 +6,7 @@ import { PLANT_ID_API_KEY } from "react-native-dotenv";
 import * as api from "../api";
 import * as utils from "../utils/utils";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Account from "./Account";
 
 class Browse extends Component {
   state = {

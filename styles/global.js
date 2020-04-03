@@ -16,6 +16,12 @@ export const globalStyles = StyleSheet.create({
   wishlistScreenContainer: {
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#e1ccfc",
+    minHeight: Dimensions.get("window").height,
+  },
+  accountScreenContainer: {
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#ffed9e",
     minHeight: Dimensions.get("window").height,
   },
