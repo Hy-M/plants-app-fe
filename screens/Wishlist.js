@@ -128,10 +128,7 @@ class Wishlist extends Component {
                       style={globalStyles.btnSingle}
                       onPress={() => {
                         this.setState({ plantToMoveToGarden: plant.plant_id }, () => {
-                          this.handleMoveToGardenBtn(
-                            plant.name,
-                            plant.image_first || defaultImgUrl
-                          );
+                          this.handleMoveToGardenBtn(plant.name, plant.image_url || defaultImgUrl);
                         });
                       }}
                     >
