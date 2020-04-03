@@ -1,26 +1,23 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-let color =
-  "#" +
-  (function co(lor) {
-    return (lor += [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"][
-      Math.floor(Math.random() * 16)
-    ]) && lor.length == 6
-      ? lor
-      : co(lor);
-  })("");
-
 export const globalStyles = StyleSheet.create({
   browseScreenContainer: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#dcf2bd",
+    backgroundColor: "#deffb3",
     height: Dimensions.get("window").height,
   },
   gardenScreenContainer: {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#cdfaee",
+    minHeight: Dimensions.get("window").height,
+  },
+  wishlistScreenContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffed9e",
+    minHeight: Dimensions.get("window").height,
   },
   browseTextContainer: {
     width: Dimensions.get("window").width / 1.2,

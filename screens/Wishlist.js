@@ -8,7 +8,7 @@ class Wishlist extends Component {
     wishlist: [],
     plantIsDeleting: null,
     defaultImgUrl:
-      "https://images.pexels.com/photos/1072824/pexels-photo-1072824.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+      "https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     plantAddedToGarden: null,
     plantToMoveToGarden: null,
     loading: true,
@@ -43,6 +43,10 @@ class Wishlist extends Component {
         .deletePlant(plant_id, "wishlist")
         .then(() => {
           this.setState({ plantIsDeleting: false }, () => {
+            if (!this.state.plantAddedToGarden) {
+              Alert.alert("Deleted!", "", [{ text: "Okay" }]);
+            }
+
             this.fetchWishlist();
           });
         })
@@ -75,15 +79,23 @@ class Wishlist extends Component {
   };
 
   render() {
-    const { wishlist, plantIsDeleting, defaultImgUrl, tappedToRefresh, loading } = this.state;
+    const {
+      wishlist,
+      plantIsDeleting,
+      defaultImgUrl,
+      tappedToRefresh,
+      loading,
+      plantAddedToGarden,
+    } = this.state;
     return (
       <ScrollView>
-        <View style={globalStyles.gardenScreenContainer}>
+        <View style={globalStyles.wishlistScreenContainer}>
           <View style={globalStyles.textContainer}>
             <Text style={globalStyles.secondaryText}>
               Tap on a plant to see more details, or long press to delete it
             </Text>
           </View>
+
           <TouchableOpacity onPress={() => this.setState({ tappedToRefresh: true })}>
             {tappedToRefresh || loading ? (
               <Text style={globalStyles.refreshText}>Loading...</Text>
@@ -93,8 +105,12 @@ class Wishlist extends Component {
           </TouchableOpacity>
 
           {plantIsDeleting && (
-            <View style={globalStyles.refreshText}>
-              <Text>Deleting...</Text>
+            <View>
+              {!plantAddedToGarden ? (
+                <Text style={globalStyles.refreshText}>Deleting...</Text>
+              ) : (
+                <Text style={globalStyles.refreshText}>Moving...</Text>
+              )}
             </View>
           )}
 
@@ -105,7 +121,7 @@ class Wishlist extends Component {
                   <Text style={globalStyles.secondaryText}>{plant.name}</Text>
                   <TouchableOpacity onLongPress={() => this.removePlant(plant.plant_id)}>
                     <Image
-                      source={{ url: plant.image_first || defaultImgUrl }}
+                      source={{ url: plant.image_url || defaultImgUrl }}
                       style={globalStyles.smallImages}
                     />
                   </TouchableOpacity>
@@ -113,8 +129,12 @@ class Wishlist extends Component {
                     <TouchableOpacity
                       style={globalStyles.btnSingle}
                       onPress={() => {
-                        this.handleMoveToGardenBtn(plant.name, plant.image_first || defaultImgUrl);
-                        this.setState({ plantToMoveToGarden: plant.plant_id });
+                        this.setState({ plantToMoveToGarden: plant.plant_id }, () => {
+                          this.handleMoveToGardenBtn(
+                            plant.name,
+                            plant.image_first || defaultImgUrl
+                          );
+                        });
                       }}
                     >
                       <Text style={globalStyles.btnText}>Move to garden</Text>

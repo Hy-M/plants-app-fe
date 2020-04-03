@@ -79,7 +79,7 @@ class Browse extends Component {
       .catch((err) => console.log(err, "error in browse.js"));
   };
 
-  addPlantToLocation = (plantName, location) => {
+  addPlantToGarden = (plantName, location) => {
     let plantDetails = {
       name: plantName,
       image_first: this.state.identifiedImageUrl,
@@ -88,6 +88,25 @@ class Browse extends Component {
       .postPlant(plantDetails, location)
       .then((newPlant) => {
         if (newPlant.plant[0].image_first === this.state.identifiedImageUrl) {
+          this.setState({ plantAddedToLocation: true }, () => {
+            Alert.alert("Success!", `${plantName} has been added to your ${location}`, [
+              { text: "Okay!" },
+            ]);
+          });
+        }
+      })
+      .catch((err) => console.log(err, "< err in addPlant"));
+  };
+
+  addPlantToWishlist = (plantName, location) => {
+    let plantDetails = {
+      name: plantName,
+      image_url: this.state.identifiedImageUrl,
+    };
+    api
+      .postPlant(plantDetails, location)
+      .then((newPlant) => {
+        if (newPlant.plant[0].image_url === this.state.identifiedImageUrl) {
           this.setState({ plantAddedToLocation: true }, () => {
             Alert.alert("Success!", `${plantName} has been added to your ${location}`, [
               { text: "Okay!" },
@@ -153,13 +172,13 @@ class Browse extends Component {
                     <View style={globalStyles.btnContainerDuo}>
                       <TouchableOpacity
                         style={globalStyles.btnDuo}
-                        onPress={() => this.addPlantToLocation(suggestion.plant_name, "garden")}
+                        onPress={() => this.addPlantToGarden(suggestion.plant_name, "garden")}
                       >
                         <Text style={globalStyles.btnText}>Add to my garden!</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={globalStyles.btnDuo}
-                        onPress={() => this.addPlantToLocation(suggestion.plant_name, "wishlist")}
+                        onPress={() => this.addPlantToWishlist(suggestion.plant_name, "wishlist")}
                       >
                         <Text style={globalStyles.btnText}>I'll grow this later!</Text>
                       </TouchableOpacity>
